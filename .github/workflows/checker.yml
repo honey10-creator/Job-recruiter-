@@ -1,0 +1,31 @@
+name: Govt Job Notifier
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Runs automatically every 30 minutes
+  workflow_dispatch: # Allows you to run it manually anytime from GitHub
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run bot script
+        run: python bot.py
+
+      - name: Save seen notifications state
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Update seen notifications cache'
+          file_pattern: seen_notifications.txt
+          
